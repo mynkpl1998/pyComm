@@ -1,8 +1,8 @@
 from __future__ import division, print_function
 import torch
 from numpy import log2
-from pyComm.models import base_rx_tx, tx, rx
 from numpy.random import randint
+from pyComm.models import base_rx_tx, tx, rx
 
 class Modem:
 
@@ -28,8 +28,16 @@ class Modem:
     constellation_length    : integer
                                 Constellation length
 
-    nnum_channel_uses       : integer
+    num_channel_uses        : integer
                                 Number of channels to use.
+    
+    tx_model                : torch.nn.Module
+                                Returns the torch tx 
+                                model.
+    
+    rx_model                : torch.nn.Module
+                                Returns the torch rx
+                                model.
 
     Raises
     ------
@@ -52,8 +60,20 @@ class Modem:
         self.__rx_model = rx(m, n)
     
     @property
+    def constellation(self):
+        raise NotImplementedError
+
+    @property
     def constellation_length(self):
         return self.__constellation_length
+    
+    @property
+    def tx_model(self):
+        return self.__tx_model
+    
+    @property
+    def rx_model(self):
+        return self.__rx_model
     
     @property
     def num_channel_uses(self):
@@ -92,6 +112,11 @@ class Modem:
                                 dim0: Batch size
                                 dim1: Number of channels to use.
                                 dim2: Complex dim. Must be always 2. (Real and Img)
+        
+        baseband_dist       : torch Normal dist object.
+                                Returns distribution from which signal
+                                was sampled. This is returned only during
+                                train mode.
         """
         if type(messages) != torch.Tensor:
             raise TypeError("message must be an 1d torch tensor of long. Got: %s"%(type(messages)))
@@ -101,11 +126,11 @@ class Modem:
             raise ValueError("messages must be >0 and <m. Got (%d, %d)"%(messages.min(), messages.max()))
         
         x = self.__tx_model.forward(messages=messages, train_mode=train_mode, explore_variance=explore_variance)
-        
+    
         if not train_mode:
             x = x.detach()
-        
-        return x
+            return x
+        return x[0], x[1]
     
     def demodulate(self, input_signal, train_mode=False):
         """

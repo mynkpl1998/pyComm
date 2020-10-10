@@ -27,6 +27,10 @@ class base_rx_tx(Module):
     num_channel_uses        : integer
                                 Returns the number of channel to use.
     
+    layers:                 : list
+                                Returns the list of parameterized layers
+                                to build the tx/rx.
+    
     Raises
     ------
     ValueError:
@@ -58,8 +62,6 @@ class base_rx_tx(Module):
     def layers(self):
         raise NotImplementedError
 
-
-
 class tx(base_rx_tx):
     
     """
@@ -82,7 +84,7 @@ class tx(base_rx_tx):
                                 Returns the number of channel to use.
     
     layers                  : tuple
-                                Parameterized layers of the transmitter.
+                                Returns parameterized layers of the transmitter.
 
     Raises
     ------
@@ -292,6 +294,9 @@ class rx(base_rx_tx):
         logits = self.__dense_3(dense_2_out)
         probs = softmax(logits, dim=1)
 
+        if not train_mode:
+            logits.detach(), probs.detach()
+        
         return logits, probs
 
 if __name__ == "__main__":

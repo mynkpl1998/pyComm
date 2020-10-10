@@ -6,6 +6,7 @@ from torch.optim import Adam
 from pyComm.modulation import Modem
 from torch.nn import CrossEntropyLoss
 from pyComm.channels import AwgnChannel
+from pyComm.utils import symbol_error_rate
 
 class alterateTrainer(object):
     """
@@ -312,9 +313,10 @@ class alterateTrainer(object):
         messages_pred, _, __ = self.modem.demodulate(input_signal=y, train_mode=False)
 
         # Calculate error rate
-        err_rate = 1 - ((messages_pred == messages).float().sum()/sample_size)
+        err_rate = symbol_error_rate(messages=messages,
+                                     messages_estimate=messages_pred)
 
-        return err_rate.item()
+        return err_rate
 
     def train(self,
                 batch_size, 

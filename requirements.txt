@@ -1,4 +1,6 @@
 numpy==1.19.1
 matplotlib==3.3.2
-torch==1.6.0
+--find-links https://download.pytorch.org/whl/torch_stable.html
+torch===1.6.0 
+torchvision===0.7.0
 pytest==6.1.1

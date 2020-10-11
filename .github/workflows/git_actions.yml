@@ -3,8 +3,11 @@ on: [push]
 jobs:
   run-tests:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
     steps:
       - uses: actions/checkout@v2
       - run: pip install -r requirements.txt
       - run: python setup.py install
-      - run: py.tests -v
+      - run: py.test -v

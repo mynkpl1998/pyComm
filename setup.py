@@ -3,7 +3,7 @@ from distutils.core import setup
 # Taken from scikit-learn setup.py
 DISTNAME = 'pyComm'
 DESCRIPTION = 'End-to-End learnding based Digital Communication Algorithms with Python'
-#LONG_DESCRIPTION = open('README.md').read()
+LONG_DESCRIPTION = open('README.md').read()
 LONG_DESCRIPTION = 'Readme'
 MAINTAINER = 'Mayank Kumar Pal'
 MAINTAINER_EMAIL = 'mynkpl1998@gmail.com'
@@ -13,7 +13,7 @@ VERSION = '0.1.0'
 #This is a list of files to install, and where
 #(relative to the 'root' dir, where setup.py is)
 #You could be more specific.
-#files = ["channelcoding/*, channelcoding/tests/*, tests/*"]
+files = ["tests/*"]
 
 setup(
     name=DISTNAME,
@@ -27,7 +27,7 @@ setup(
     #(If you have other packages (dirs) or modules (py files) then
     #put them into the package directory - they will be found
     #recursively.)
-    packages=['pyComm'],
+    packages=['pyComm', 'pyComm.tests'],
     install_requires=[
           'numpy',
           'scipy',

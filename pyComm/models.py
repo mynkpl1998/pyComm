@@ -176,14 +176,15 @@ class tx(base_rx_tx):
         normalized_x = normalize(complex_x, p=2, dim=2)
 
         # If training mode is enabled. Add noise to the signal for exploration.
+        signal_dist = None
         if train_mode:
             explore_std_dev = torch.ones(normalized_x.size()) * sqrt(explore_variance) * 0.5
             signal_dist = Normal(sqrt(1 - explore_variance) * normalized_x, explore_std_dev)
         
         if train_mode:
-            return signal_dist.sample(), signal_dist
+            return normalized_x, signal_dist
         else:
-            return normalized_x
+            return normalized_x.detach()
 
 
 class rx(base_rx_tx):
@@ -295,7 +296,7 @@ class rx(base_rx_tx):
         probs = softmax(logits, dim=1)
 
         if not train_mode:
-            logits.detach(), probs.detach()
+            return logits.detach(), probs.detach()
         
         return logits, probs
 

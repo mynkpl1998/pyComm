@@ -73,10 +73,3 @@ class AwgnChannel(object):
         
         output_signal = input_signal + w
         return output_signal
-        
-
-if __name__ == "__main__":
-    awgn = AwgnChannel()
-    x = torch.randn(2, 4, 2)
-    x = torch.nn.functional.normalize(x, p=2, dim=2)
-    y = awgn.propagate(input_signal=x, snr_db=10)
